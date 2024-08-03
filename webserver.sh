@@ -2,13 +2,13 @@
 
 # Define variables
 EC2_USER="ubuntu"  # Username for Ubuntu AMIs
-EC2_INSTANCE_1="your-ec2-instance-1-ip"  # Replace with the public IP of the first EC2 instance
-EC2_INSTANCE_2="your-ec2-instance"  # Replace with the public IP of the second EC2 instance
-SSH_KEY="path-to-your-ssh-key.pem"  # Replace with the path to your SSH private key
+EC2_INSTANCE_1="54.87.140.61"  # Replace with the public IP of the EC2 instance
+EC2_INSTANCE_2="54.242.16.19"  # Replace with the public IP of the EC2 instance
+SSH_KEY="shellscript.pem"  # Replace with the path to your SSH private key
 
 # Function to install Apache and deploy a simple webpage
 install_apache() {
-    ssh -i "$SSH_KEY" "$EC2_USER@$EC2_INSTANCE_1" << 'EOF'
+    ssh -o StrictHostKeyChecking=no -i "$SSH_KEY" "$EC2_USER@$EC2_INSTANCE_1" << 'EOF'
         sudo apt-get update
         sudo apt-get install -y apache2
         sudo systemctl start apache2
@@ -24,7 +24,7 @@ EOF
 
 # Function to install Nginx and deploy a simple webpage
 install_nginx() {
-    ssh -i "$SSH_KEY" "$EC2_USER@$EC2_INSTANCE_2" << 'EOF'
+    ssh -o StrictHostKeyChecking=no -i "$SSH_KEY" "$EC2_USER@$EC2_INSTANCE_2" << 'EOF'
         sudo apt-get update
         sudo apt-get install -y nginx
         sudo systemctl start nginx
@@ -38,8 +38,14 @@ EOF
     echo "Nginx installed and simple webpage deployed on EC2 instance $EC2_INSTANCE_2."
 }
 
-# Execute functions
-install_apache
-install_nginx
+# Check the argument and execute the corresponding function
+if [ "$1" == "apache" ]; then
+    install_apache
+elif [ "$1" == "nginx" ]; then
+    install_nginx
+else
+    echo "Usage: $0 {apache|nginx}"
+    exit 1
+fi
 
 echo "Script execution completed."

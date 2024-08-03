@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Replace with your actual SSH key and EC2 user
-SSH_KEY="/path/to/your/key.pem"
-EC2_USER="your_ec2_user"
+SSH_KEY="shellscript.pem"
+EC2_USER="ubuntu"
 
 # Check for required arguments
 if [ "$#" -ne 2 ]; then
