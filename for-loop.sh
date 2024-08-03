@@ -1,5 +1,5 @@
 #!/bin/bash
-for i in {1..5}
+for i in {1..6}
 do
    echo "Welcome $i times"
 done

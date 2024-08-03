@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Enter a number (1-3): "
+echo "Enter a number (1-4): "
 read number
 
 case $number in
@@ -12,6 +12,9 @@ case $number in
     ;;
   3)
     echo "You entered 3"
+    ;;
+  4)
+    echo "You entered 4"
     ;;
   *)
     echo "Invalid number"

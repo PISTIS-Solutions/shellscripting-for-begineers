@@ -3,7 +3,7 @@
 # Replace with your actual SSH key and EC2 user
 SSH_KEY="shellscript.pem"
 EC2_USER="ubuntu"
-SERVER_IP="54.226.24.156"
+SERVER_IP="18.205.239.19"
 
 # Function to install Docker and Docker Compose on the remote server
 install_docker_and_compose() {

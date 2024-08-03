@@ -51,7 +51,7 @@ SSH_KEY="shellscript.pem"
 EC2_USER="ubuntu"
 
 # Define the list of server IP addresses
-SERVER_IPS=("52.21.0.1" "50.19.163.84")  # Replace with your actual IP addresses
+SERVER_IPS=("18.212.82.44" "54.242.147.63")  # Replace with your actual IP addresses
 
 # Check for required argument
 if [ "$#" -ne 1 ]; then

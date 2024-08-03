@@ -1,6 +1,6 @@
-#! /bin/sh
-a=99
-b=45
+#!/bin/sh
+a=76
+b=75
 
 if [ $a -lt $b ]
 then
