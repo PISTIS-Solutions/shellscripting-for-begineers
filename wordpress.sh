@@ -23,14 +23,31 @@ sudo apt-get install -y docker-compose-plugin
 # Verify Docker Compose installation
 docker compose version
 
+# Remove existing repository directory if it exists
+if [ -d "docker-wordpress" ]; then
+    echo "Removing existing 'docker-wordpress' directory..."
+    sudo rm -rf docker-wordpress
+fi
+
 # Clone the repository
 git clone https://github.com/PISTIS-Solutions/docker-wordpress.git
 cd docker-wordpress
 
+# Rename file if it has a leading space
+if [ -f " docker-compose.yml" ]; then
+    mv ' docker-compose.yml' docker-compose.yml
+fi
+
+# Check if the docker-compose.yml file exists
+if [ ! -f "docker-compose.yml" ]; then
+    echo "docker-compose.yml file not found in the 'docker-wordpress' directory."
+    exit 1
+fi
+
 # Human approval step
 read -p "Do you want to run 'docker compose up'? (yes/no): " response
 if [[ "$response" == "yes" ]]; then
-    sudo docker compose up
+    sudo docker compose up -d
     echo "Docker Compose is running."
 else
     echo "Docker Compose was not started."
