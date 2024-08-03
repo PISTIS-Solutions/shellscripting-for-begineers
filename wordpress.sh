@@ -9,7 +9,9 @@ SERVER_IP="54.226.24.156"
 install_docker_and_compose() {
     local server_ip=$1
 
-    ssh -o StrictHostKeyChecking=no -i "$SSH_KEY" "$EC2_USER@$server_ip" << 'EOF'
+    ssh -o StrictHostKeyChecking=no -i "$SSH_KEY" "$EC2_USER@$server_ip" << "EOF"
+        set -e  # Exit immediately if a command exits with a non-zero status
+
         # Update package information and install prerequisites
         sudo apt-get update
         sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
@@ -65,9 +67,18 @@ install_docker_and_compose() {
 EOF
 }
 
-# Call the function
-install_docker_and_compose "$SERVER_IP"
+# Initialize success variable
+success=true
 
-echo "Script execution completed."
+# Call the function and capture the exit status
+if ! install_docker_and_compose "$SERVER_IP"; then
+    success=false
+fi
 
+# Check if the script executed successfully
+if $success; then
+    echo "Script execution completed."
+else
+    echo "This Script did not execute successfully, please check supplied arguments and try again."
+fi
 
