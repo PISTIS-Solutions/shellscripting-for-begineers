@@ -4,24 +4,20 @@
 SSH_KEY="shellscript.pem"
 EC2_USER="ubuntu"
 
-# Check for required arguments
-if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <action[nginx|apache]> <inventory_file>"
+# Define the list of server IP addresses
+SERVER_IPS=("54.87.140.61" "54.242.16.19")  # Replace with your actual IP addresses
+
+# Check for required argument
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <action[nginx|apache]>"
     exit 1
 fi
 
 action=$1
-inventory_file=$2
 
 # Validate action
 if [ "$action" != "nginx" ] && [ "$action" != "apache" ]; then
     echo "Invalid action. Please provide either 'nginx' or 'apache'."
-    exit 1
-fi
-
-# Check if inventory file exists
-if [ ! -f "$inventory_file" ]; then
-    echo "Inventory file not found!"
     exit 1
 fi
 
@@ -65,12 +61,12 @@ EOF
     fi
 }
 
-while IFS= read -r server_ip; do
+for server_ip in "${SERVER_IPS[@]}"; do
     if [ "$action" == "nginx" ]; then
         install_nginx "$server_ip"
     elif [ "$action" == "apache" ]; then
         install_apache "$server_ip"
     fi
-done < "$inventory_file"
+done
 
 echo "Script execution completed."

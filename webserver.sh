@@ -1,51 +1,56 @@
 #!/bin/bash
 
-# Define variables
-EC2_USER="ubuntu"  # Username for Ubuntu AMIs
-EC2_INSTANCE_1="54.87.140.61"  # Replace with the public IP of the EC2 instance
-EC2_INSTANCE_2="54.242.16.19"  # Replace with the public IP of the EC2 instance
-SSH_KEY="shellscript.pem"  # Replace with the path to your SSH private key
+# Replace with your actual SSH key and EC2 user
+SSH_KEY="shellscript.pem"
+EC2_USER="ubuntu"
 
-# Function to install Apache and deploy a simple webpage
+# Define the list of server IP addresses
+SERVER_IPS=("54.87.140.61" "54.242.16.19")  # Replace with your actual IP addresses
+
+# Function to install Apache
 install_apache() {
-    ssh -o StrictHostKeyChecking=no -i "$SSH_KEY" "$EC2_USER@$EC2_INSTANCE_1" << 'EOF'
-        sudo apt-get update
+    server_ip="$1"
+    ssh -o StrictHostKeyChecking=no -i "$SSH_KEY" "$EC2_USER@$server_ip" << EOF
+        sudo apt-get update -qq
         sudo apt-get install -y apache2
         sudo systemctl start apache2
         sudo systemctl enable apache2
 
         echo "<html>
-        <head><title>Web Server 1</title></head>
-        <body><h1>Welcome to Web Server 1 - Apache</h1></body>
+        <head><title>Web Server Apache</title></head>
+        <body><h1>Welcome to Apache Web Server</h1></body>
         </html>" | sudo tee /var/www/html/index.html
 EOF
-    echo "Apache installed and simple webpage deployed on EC2 instance $EC2_INSTANCE_1."
+    if [ $? -ne 0 ]; then
+        echo "Error installing Apache on $server_ip"
+    else
+        echo "Apache installed and simple webpage deployed on EC2 instance $server_ip."
+    fi
 }
 
-# Function to install Nginx and deploy a simple webpage
+# Function to install Nginx
 install_nginx() {
-    ssh -o StrictHostKeyChecking=no -i "$SSH_KEY" "$EC2_USER@$EC2_INSTANCE_2" << 'EOF'
-        sudo apt-get update
+    server_ip="$1"
+    ssh -o StrictHostKeyChecking=no -i "$SSH_KEY" "$EC2_USER@$server_ip" << EOF
+        sudo apt-get update -qq
         sudo apt-get install -y nginx
         sudo systemctl start nginx
         sudo systemctl enable nginx
 
         echo "<html>
-        <head><title>Web Server 2</title></head>
-        <body><h1>Welcome to Web Server 2 - Nginx</h1></body>
+        <head><title>Web Server Nginx</title></head>
+        <body><h1>Welcome to Nginx Web Server</h1></body>
         </html>" | sudo tee /var/www/html/index.html
 EOF
-    echo "Nginx installed and simple webpage deployed on EC2 instance $EC2_INSTANCE_2."
+    if [ $? -ne 0 ]; then
+        echo "Error installing Nginx on $server_ip"
+    else
+        echo "Nginx installed and simple webpage deployed on EC2 instance $server_ip."
+    fi
 }
 
-# Check the argument and execute the corresponding function
-if [ "$1" == "apache" ]; then
-    install_apache
-elif [ "$1" == "nginx" ]; then
-    install_nginx
-else
-    echo "Usage: $0 {apache|nginx}"
-    exit 1
-fi
+# Install Nginx on the first server and Apache on the second server
+install_nginx "${SERVER_IPS[0]}"
+install_apache "${SERVER_IPS[1]}"
 
 echo "Script execution completed."
