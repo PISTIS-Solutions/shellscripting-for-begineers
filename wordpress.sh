@@ -1,54 +1,73 @@
 #!/bin/bash
 
-# Update package information and install prerequisites
-sudo apt-get update
-sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+# Replace with your actual SSH key and EC2 user
+SSH_KEY=""
+EC2_USER="ubuntu"
+SERVER_IP=""
 
-# Add Docker's official GPG key and set up the stable repository
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Function to install Docker and Docker Compose on the remote server
+install_docker_and_compose() {
+    local server_ip=$1
 
-# Install Docker
-sudo apt-get update
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+    ssh -o StrictHostKeyChecking=no -i "$SSH_KEY" "$EC2_USER@$server_ip" << 'EOF'
+        # Update package information and install prerequisites
+        sudo apt-get update
+        sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 
-# Verify Docker installation
-docker --version
+        # Add Docker's official GPG key and set up the stable repository
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+        echo \
+          "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+          $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-# Install Docker Compose plugin
-sudo apt-get install -y docker-compose-plugin
+        # Install Docker
+        sudo apt-get update
+        sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
-# Verify Docker Compose installation
-docker compose version
+        # Verify Docker installation
+        docker --version
 
-# Remove existing repository directory if it exists
-if [ -d "docker-wordpress" ]; then
-    echo "Removing existing 'docker-wordpress' directory..."
-    sudo rm -rf docker-wordpress
-fi
+        # Install Docker Compose plugin
+        sudo apt-get install -y docker-compose-plugin
 
-# Clone the repository
-git clone https://github.com/PISTIS-Solutions/docker-wordpress.git
-cd docker-wordpress
+        # Verify Docker Compose installation
+        docker compose version
 
-# Rename file if it has a leading space
-if [ -f " docker-compose.yml" ]; then
-    mv ' docker-compose.yml' docker-compose.yml
-fi
+        # Remove existing repository directory if it exists
+        if [ -d "docker-wordpress" ]; then
+            echo "Removing existing 'docker-wordpress' directory..."
+            sudo rm -rf docker-wordpress
+        fi
 
-# Check if the docker-compose.yml file exists
-if [ ! -f "docker-compose.yml" ]; then
-    echo "docker-compose.yml file not found in the 'docker-wordpress' directory."
-    exit 1
-fi
+        # Clone the repository
+        git clone https://github.com/PISTIS-Solutions/docker-wordpress.git
+        cd docker-wordpress
 
-# Human approval step
-read -p "Do you want to run 'docker compose up'? (yes/no): " response
-if [[ "$response" == "yes" ]]; then
-    sudo docker compose up -d
-    echo "Docker Compose is running."
-else
-    echo "Docker Compose was not started."
-fi
+        # Rename file if it has a leading space
+        if [ -f " docker-compose.yml" ]; then
+            mv ' docker-compose.yml' docker-compose.yml
+        fi
+
+        # Check if the docker-compose.yml file exists
+        if [ ! -f "docker-compose.yml" ]; then
+            echo "docker-compose.yml file not found in the 'docker-wordpress' directory."
+            exit 1
+        fi
+
+        # Human approval step
+        read -p "Do you want to run 'docker compose up'? (yes/no): " response
+        if [[ "$response" == "yes" ]]; then
+            sudo docker compose up -d
+            echo "Docker Compose is running."
+        else
+            echo "Docker Compose was not started."
+        fi
+EOF
+}
+
+# Call the function
+install_docker_and_compose "$SERVER_IP"
+
+echo "Script execution completed."
+
+
