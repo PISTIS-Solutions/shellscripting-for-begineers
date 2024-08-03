@@ -3,7 +3,7 @@
 # Define variables
 EC2_USER="ubuntu"  # Username for Ubuntu AMIs
 EC2_INSTANCE_1="your-ec2-instance-1-ip"  # Replace with the public IP of the first EC2 instance
-EC2_INSTANCE_2="your-ec2-instance-2-ip"  # Replace with the public IP of the second EC2 instance
+EC2_INSTANCE_2="your-ec2-instance"  # Replace with the public IP of the second EC2 instance
 SSH_KEY="path-to-your-ssh-key.pem"  # Replace with the path to your SSH private key
 
 # Function to install Apache and deploy a simple webpage
