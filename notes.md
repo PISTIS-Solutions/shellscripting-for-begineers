@@ -29,7 +29,7 @@
 
 ###  Automation tools
     1. shell tools - bash and powershell
-    2. CI/CD tools - jenkins, github actiosn e.t.c
+    2. CI/CD tools - jenkins, github actions e.t.c
     3. Configuration Management tools - Ansible, chef, puppet
     4. Infrastructue as Code  terraform, tofu and cloudformation
 

@@ -17,21 +17,20 @@ sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 # Verify Docker installation
 docker --version
 
-# Install Docker Compose
-sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep -Po '"tag_name": "\K.*\d')" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+# Install Docker Compose plugin
+sudo apt-get install -y docker-compose-plugin
 
 # Verify Docker Compose installation
-docker-compose --version
+docker compose version
 
 # Clone the repository
 git clone https://github.com/PISTIS-Solutions/docker-wordpress.git
 cd docker-wordpress
 
 # Human approval step
-read -p "Do you want to run 'docker-compose up'? (yes/no): " response
+read -p "Do you want to run 'docker compose up'? (yes/no): " response
 if [[ "$response" == "yes" ]]; then
-    sudo docker-compose up -d
+    sudo docker compose up
     echo "Docker Compose is running."
 else
     echo "Docker Compose was not started."
