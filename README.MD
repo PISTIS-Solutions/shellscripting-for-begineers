@@ -1,4 +1,4 @@
-## SHELLSCRIPTING FOR BEGINEERS
+## SHELL SCRIPTING FOR BEGINEERS
 
 ## Webinar Agenda
 - What is Automation

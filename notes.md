@@ -39,7 +39,7 @@
 
 Powershell is a native windows shell program, that runs on windows Only 
 
-Bash is a command language interpreter: a version of the classic Unix shell with many enhancements. Bash is the default shell installed on GNU/Linux distributions and many other Unix-style systems, such as macOS.
+Bourne again shells (BASH)- is a command language interpreter, a version of the classic Unix shell with many enhancements. Bash is the default shell installed on GNU/Linux distributions and many other Unix-style systems, such as macOS.
 
 ###  Examples and Lab guides
 
